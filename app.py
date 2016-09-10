@@ -3,7 +3,6 @@ app = Flask(__name__)
 from flask import request
 
 
-
 @app.route('/', methods=['GET','POST'])
 def json():
     app.logger.debug("JSON received...")
