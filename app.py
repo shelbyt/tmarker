@@ -44,8 +44,11 @@ def preProcessAndOutput(video_id):
     outfile_name = str(video_id)
     with open('output.en.ttml') as infile, open(outfile_name,'w') as outfile:
         for line in infile:
+            # Remove any BR tags in the sentences, messed up XML parsing
+            # if they are not removed
             line = re.sub('<br.*?/>', ' ', line)
-            outfile.write(parser.unescape(line))
+           
+            outfile.write(line)
 
 def downloadSubs(video_id):
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -57,8 +60,6 @@ def returnSentences(video_id, in_time, in_time_offset):
     #the same time stamp. Print both
 
     # Ensure that the time we're working with is an int
-    #print in_time
-    #in_time = int(in_time)
     print type(in_time)
     in_time = int(in_time)
 
@@ -170,4 +171,3 @@ def json():
 
 if __name__ == '__main__':
     app.run()
-
