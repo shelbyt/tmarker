@@ -25,6 +25,7 @@ def my_hook(d):
 
 ydl_opts = {
     'writeautomaticsub': True,
+    'writesubtitles': True,
     'skip_download': True,
     'subtitlesformat': 'ttml',
     'outtmpl': 'output',
