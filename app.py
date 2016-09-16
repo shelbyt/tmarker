@@ -6,6 +6,7 @@ import youtube_dl
 import HTMLParser
 import re
 import xml.etree.ElementTree as ET
+import os.path
 
 parser = HTMLParser.HTMLParser()
 
@@ -161,12 +162,11 @@ def json():
 
     if request.json:
         mydata = request.json
-        downloadSubs(mydata.get("id"))
-        #print type(mydata.get("time"))
-        #print type(mydata.get("id"))
-        print(type(mydata.get("time")))
+        # TODO(shelbyt): Lock the file? And make sure that this
+        # is actually a good way to store and check for file existing.
+        if(not os.path.isfile(mydata.get("id"))):
+            downloadSubs(mydata.get("id"))
         return returnSentences(mydata.get("id"), mydata.get("time"), 20)
-        #return "DATA"
     else:
         return "no json received"
 
