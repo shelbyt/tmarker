@@ -49,7 +49,6 @@ def preProcessAndOutput(video_id):
             # Remove any BR tags in the sentences, messed up XML parsing
             # if they are not removed
             line = re.sub('<br.*?/>', ' ', line)
-           
             outfile.write(line)
 
 def downloadSubs(video_id):
@@ -62,13 +61,9 @@ def returnSentences(video_id, in_time, in_time_offset):
     #the same time stamp. Print both
 
     # Ensure that the time we're working with is an int
-    print type(in_time)
-    in_time = int(in_time)
+    #print type(in_time)
+    #in_time = int(in_time)
 
-    # Ensure we are never starting at a negative time
-    in_time_start = max(in_time - in_time_offset,0)
-    
-    in_time_end = in_time + in_time_offset
    
     # TODO(shelbyt): Dangerous to parse local file in server?
     tree = ET.parse(video_id)
@@ -77,6 +72,8 @@ def returnSentences(video_id, in_time, in_time_offset):
     
     # Total sentences
     total_p = len(div.findall("./"))
+
+   
     
     split_p_init = total_p/2
     
@@ -88,18 +85,24 @@ def returnSentences(video_id, in_time, in_time_offset):
     end_index = total_p
     mid_index = total_p/2
 
-    print split_p_btime
-    print split_p_etime
-    print in_time
-    print split_p_bindex
-    #return
+    #print split_p_btime
+    #print split_p_etime
+    #print in_time
+    #print split_p_bindex
     
     # TODO(shelbyt): Any way to avoid having to do the bsearch twice?
     # Start Index: Stop if we've reach the first p element
+
+
+    # Ensure we are never starting at a negative time
+    in_time_start = max(in_time - in_time_offset,0)
     while(split_p_bindex != 0):
+        if(in_time_start == 0):
+            split_p_bindex = in_time_start
+            break
         #print str(in_time_start) + " >= " + str(split_p_btime) + " :: " + str(in_time_start) + " <= " + str(split_p_etime)
         if(in_time_start >= split_p_btime and in_time_start <= split_p_etime):
-            break;
+            break
         elif (in_time_start < split_p_btime):
             end_index = split_p_bindex
             split_p_bindex = max(split_p_bindex - abs(start_index - end_index)/2,0)
@@ -121,8 +124,13 @@ def returnSentences(video_id, in_time, in_time_offset):
     split_p_btime = returnTime(div[split_p_init].get('begin'))
     split_p_etime = returnTime(div[split_p_init].get('end'))
  
+    # Ensure we are never off the edge of the video
+    in_time_end = min(in_time + in_time_offset, returnTime(div[total_p -1].get('end')))
     # End Index: Stop if we've reached the last p element
     while(split_p_eindex != total_p):
+        if(in_time_end == returnTime(div[total_p -1].get('end'))):
+            split_p_eindex = total_p - 1
+            break
         #print str(in_time_end) + " >= " + str(split_p_btime) + " :: " + str(in_time_end) + " <= " + str(split_p_etime)
         if(in_time_end >= split_p_btime and in_time_end <= split_p_etime):
             break;
@@ -136,7 +144,7 @@ def returnSentences(video_id, in_time, in_time_offset):
             split_p_eindex = min(split_p_eindex + abs(start_index - end_index)/2, total_p)
             split_p_btime = returnTime(div[split_p_eindex].get('begin'))
             split_p_etime = returnTime(div[split_p_eindex].get('end'))
-        print split_p_eindex
+        #print split_p_eindex
     
     #print "Begin index is " + str(split_p_bindex)
     #print "End index is " + str(split_p_eindex)
