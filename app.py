@@ -149,16 +149,14 @@ def returnSentences(video_id, in_time, in_time_offset):
     # Should be ok vs. fall off the end because last index
     # is not included in range. Still may be bad style
     for sentence in range(split_p_bindex,split_p_eindex+1):# why +1
+        # Need to check if it a NoneType because some lines in the
+        # transcript have only <p> elements with no content. This
+        # causes a typeconversion error between str+NonType
+        if(div[sentence].text is None):
+            continue
         if(sentence == split_p_eindex):
-            # Need to check if it a NoneType because some lines in the
-            # transcript have only <p> elements with no content. This
-            # causes a typeconversion error between str+NonType
-            if(div[sentence].text is None):
-                continue
             note_str += div[sentence].text
         else:
-            if(div[sentence].text is None):
-                continue
             note_str += div[sentence].text + "\n"
 
     #print "DONE"
