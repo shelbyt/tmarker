@@ -63,7 +63,6 @@ def returnSentences(video_id, in_time, in_time_offset):
     # Ensure that the time we're working with is an int
     #print type(in_time)
     #in_time = int(in_time)
-
    
     # TODO(shelbyt): Dangerous to parse local file in server?
     tree = ET.parse(video_id)
@@ -72,9 +71,6 @@ def returnSentences(video_id, in_time, in_time_offset):
     
     # Total sentences
     total_p = len(div.findall("./"))
-
-   
-    
     split_p_init = total_p/2
     
     split_p_btime = returnTime(div[split_p_init].get('begin'))
@@ -152,10 +148,17 @@ def returnSentences(video_id, in_time, in_time_offset):
     note_str = ""
     # Should be ok vs. fall off the end because last index
     # is not included in range. Still may be bad style
-    for sentence in range(split_p_bindex,split_p_eindex+1):
+    for sentence in range(split_p_bindex,split_p_eindex+1):# why +1
         if(sentence == split_p_eindex):
+            # Need to check if it a NoneType because some lines in the
+            # transcript have only <p> elements with no content. This
+            # causes a typeconversion error between str+NonType
+            if(div[sentence].text is None):
+                continue
             note_str += div[sentence].text
         else:
+            if(div[sentence].text is None):
+                continue
             note_str += div[sentence].text + "\n"
 
     #print "DONE"
@@ -172,6 +175,8 @@ def json():
         mydata = request.json
         # TODO(shelbyt): Lock the file? And make sure that this
         # is actually a good way to store and check for file existing.
+        print type(mydata.get("id"))
+        print type(mydata.get("time"))
         if(not os.path.isfile(mydata.get("id"))):
             downloadSubs(mydata.get("id"))
         return returnSentences(mydata.get("id"), mydata.get("time"), 20)
