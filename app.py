@@ -7,7 +7,6 @@ import re
 import xml.etree.ElementTree as ET
 import os.path
 
-
 class MyLogger(object):
     def debug(self, msg):
         pass
@@ -42,17 +41,31 @@ def returnTime(time):
 
 def preprocess_and_output(video_id):
     outfile_name = str(video_id)
+    # TODO(shelbyt): ENLANG
     with open('output.en.ttml') as infile, open(outfile_name, 'w') as outfile:
         for line in infile:
             # Remove any BR tags in the sentences, messed up XML parsing
             # if they are not removed
             line = re.sub('<br.*?/>', ' ', line)
             outfile.write(line)
+    # TODO(shelbyt): ENLANG
+    if os.path.isfile("output.en.ttml"):
+        os.remove("output.en.ttml")
 
 def download_subs(video_id):
     with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
         ydl.download(['http://www.youtube.com/watch?v='+str(video_id)])
+    # TODO(shelbyt): ENLANG
+    # If we have sucessfully downloaded a subtitle begin to process it
+    if os.path.isfile("output.en.ttml"):
+        print "Subtitles exist"
         preprocess_and_output(video_id)
+        return 0
+    else:
+
+        print "Subtitles DONOT exist"
+        # If the subtitle does not exist, return error code
+        return -1
 
 def return_sentences(video_id, in_time, in_time_offset):
     #TODO(shelbyt): EDGE CASES: Sentences one after an anther have
@@ -155,10 +168,13 @@ def json():
         # TODO(shelbyt): Lock the file? And make sure that this
         # is actually a good way to store and check for file existing.
         print type(mydata.get("id"))
+        print mydata.get("id")
         print type(mydata.get("time"))
-        if not os.path.isfile(mydata.get("id")):
-            download_subs(mydata.get("id"))
-        return return_sentences(mydata.get("id"), mydata.get("time"), 20)
+        print mydata.get("time")
+        if download_subs(mydata.get("id")) == 0:
+            return return_sentences(mydata.get("id"), mydata.get("time"), 20)
+        else:
+            return "Notes Unavailable"
     else:
         return "no json received"
 
