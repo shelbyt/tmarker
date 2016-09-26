@@ -73,7 +73,7 @@ def return_sentences(video_id, in_time, in_time_offset):
 
     # Ensure that the time we're working with is an int
     #print type(in_time)
-    #in_time = int(in_time)
+    in_time = int(in_time)
     # TODO(shelbyt): Dangerous to parse local file in server?
     tree = ET.parse(video_id)
     root = tree.getroot()
