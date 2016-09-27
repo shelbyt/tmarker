@@ -6,6 +6,10 @@ import youtube_dl
 import re
 import xml.etree.ElementTree as ET
 import os.path
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 
 class MyLogger(object):
     def debug(self, msg):
