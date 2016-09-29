@@ -95,7 +95,16 @@ def return_sentences(video_id, in_time, in_time_offset):
     # Start Index: Stop if we've reach the first p element
     # Ensure we are never starting at a negative time
     in_time_start = max(in_time - in_time_offset, 0)
+
+
+    #TODO:(shelbyt): This is a hack to make sure we don't oscillate between
+    # two indexes i.e. id-LHAywHmItKM @ time 0:00
+    prev_index = -999
     while split_p_bindex != 0:
+        if split_p_bindex is prev_index:
+            break
+        else:
+            prev_index = split_p_bindex
         if in_time_start == 0:
             split_p_bindex = in_time_start
             break
@@ -124,7 +133,15 @@ def return_sentences(video_id, in_time, in_time_offset):
     in_time_end = min(in_time + in_time_offset,
             returnTime(div[total_p -1].get('end')))
     # End Index: Stop if we've reached the last p element
+
+    #TODO:(shelbyt): This is a hack to make sure we don't oscillate between
+    # two indexes i.e. id-LHAywHmItKM @ time 0:00
+    prev_index = -999
     while split_p_eindex != total_p:
+        if split_p_eindex is prev_index:
+            break
+        else:
+            prev_index = split_p_eindex
         if in_time_end == returnTime(div[total_p -1].get('end')):
             split_p_eindex = total_p - 1
             break
