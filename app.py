@@ -170,9 +170,7 @@ def return_sentences(video_id, in_time, in_time_offset):
         if div[sentence].text is None:
             continue
         if sentence == split_p_eindex:
-            note_str += div[sentence].text
-        else:
-            note_str += div[sentence].text + "\n"
+            note_str += div[sentence].text + " "
 
     #print "DONE"
     return note_str
