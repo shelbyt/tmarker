@@ -169,7 +169,10 @@ def return_sentences(video_id, in_time, in_time_offset):
         # causes a typeconversion error between str+NonType
         if div[sentence].text is None:
             continue
+        print sentence, split_p_eindex
         if sentence == split_p_eindex:
+            note_str += div[sentence].text
+        else:
             note_str += div[sentence].text + " "
 
     #print "DONE"
