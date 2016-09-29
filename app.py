@@ -193,7 +193,7 @@ def json():
         print type(mydata.get("time"))
         print mydata.get("time")
         if download_subs(mydata.get("id")) == 0:
-            return return_sentences(mydata.get("id"), mydata.get("time"), 20)
+            return return_sentences(mydata.get("id"), mydata.get("time"), 15)
         else:
             return "Notes Unavailable"
     else:
