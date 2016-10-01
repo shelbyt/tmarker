@@ -180,7 +180,7 @@ def lambda_handler(event, context):
     print event["id"]
     print event["time"]
     if download_subs(event["id"],context) == 0:
-        return return_sentences(event["id"], event["time"], 20)
+        return return_sentences(event["id"], event["time"], 10)
     else:
         return "Notes Unavailable"
 
